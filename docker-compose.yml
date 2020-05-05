@@ -22,6 +22,9 @@ services:
     volumes:
       # db-data という volume を作成
       - db-data:/var/lib/mysql
+    # workbench と接続するためにホストとコンテナを接続
+    ports:
+      - "3306:3306"
 
 # docker のリソースとしてのvolume
 volumes:
