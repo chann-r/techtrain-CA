@@ -1,5 +1,5 @@
 FROM golang:1.14-alpine
 
-WORKDIR /api
+WORKDIR /techtrain-CA
 
 EXPOSE 8080
