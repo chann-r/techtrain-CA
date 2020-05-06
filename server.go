@@ -1,9 +1,7 @@
 package main
 
-import (
-  // モジュール名/独自パッケージ名でimport
-  "techtrain-CA/controllers"
-)
+// モジュール名/独自パッケージ名でimport
+import "techtrain-CA/controllers"
 
 func main() {
   controllers.Router.Run()
