@@ -22,7 +22,12 @@ func NewUserController(sqlHandler *database.SqlHandler) *UserController {
 
 // GETリクエストがきたら、クエリからパラメーターを取得して、処理してJSONで返す
 func (controller *UserController) Get(c *gin.Context) {
-  id, _ := strconv.Atoi(c.Param("id"))
+  // Paramメソッドでクエリのidを取得し、Atoiメソッドでintに変換
+  id, err := strconv.Atoi(c.Param("id"))
+
+  if err != nil {
+    c.JSON(500, err)
+  }
 
   user, err := controller.UserRepository.FindByToken(id)
   if err != nil {

@@ -25,10 +25,12 @@ func NewSqlHandler() *SqlHandler {
   return sqlHandler
 }
 
+// クエリの実行結果を格納するための構造体
 type SqlRow struct {
   Rows *sql.Rows
 }
 
+// クエリを実行して結果行を返す
 func (handler *SqlHandler) Query(statement string, args ...interface{}) (*SqlRow, error) {
   rows, err := handler.Conn.Query(statement, args...)
   if err != nil {
@@ -39,14 +41,16 @@ func (handler *SqlHandler) Query(statement string, args ...interface{}) (*SqlRow
   return row, nil
 }
 
-func (row SqlRow) Close() error {
-  return row.Rows.Close()
-}
-
+// Scanメソッドで読み取りできるように結果行をセット
 func (row SqlRow) Next() bool {
   return row.Rows.Next()
 }
 
+// dest に結果行をコピー
 func (row SqlRow) Scan(dest ...interface{}) error {
   return row.Rows.Scan(dest...)
+}
+
+func (row SqlRow) Close() error {
+  return row.Rows.Close()
 }
