@@ -1,3 +1,4 @@
+// 独自パッケージのモジュール名
 module techtrain-CA
 
 go 1.14
