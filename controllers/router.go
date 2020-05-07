@@ -16,8 +16,8 @@ func init() {
   // DBに接続 & コントローラーを初期化
   userController := NewUserController(database.NewSqlHandler())
 
-  //ユーザー関連のエンドポイント 
-  router.GET("/user/create", func(c *gin.Context) { userController.Create(c) })
+  //ユーザー関連のエンドポイント
+  router.POST("/user/create", func(c *gin.Context) { userController.Create(c) })
   router.GET("/user/get/:id", func(c *gin.Context) { userController.Get(c) })
 
   Router = router
