@@ -25,13 +25,14 @@ func NewSqlHandler() *SqlHandler {
   return sqlHandler
 }
 
-// クエリの実行結果を格納するための構造体
+// クエリの実行結果の行を格納するための構造体
 type SqlRow struct {
   Rows *sql.Rows
 }
 
 // クエリを実行して結果行を返す
 func (handler *SqlHandler) Query(statement string, args ...interface{}) (*SqlRow, error) {
+  // Queryメソッドが *Rows型を返す
   rows, err := handler.Conn.Query(statement, args...)
   if err != nil {
     return new(SqlRow), err
@@ -53,4 +54,29 @@ func (row SqlRow) Scan(dest ...interface{}) error {
 
 func (row SqlRow) Close() error {
   return row.Rows.Close()
+}
+
+// クエリの実行結果を格納する構造体
+type SqlResult struct {
+  Result sql.Result
+}
+
+// クエリを実行して結果を返す
+func (handler * SqlHandler) Execute(statement string, args ...interface{}) (SqlResult, error) {
+  res := SqlResult{}
+
+  // Execメソッドが Result型を返す
+  result, err := handler.Conn.Exec(statement, args...)
+  if err != nil {
+    return res, err
+  }
+
+  res.Result = result
+  return res, nil
+}
+
+
+// 最後に挿入された行のidをint64型で返す
+func (res SqlResult) LastInsertId() (int64, error) {
+  return res.Result.LastInsertId()
 }
