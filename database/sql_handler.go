@@ -75,7 +75,6 @@ func (handler * SqlHandler) Execute(statement string, args ...interface{}) (SqlR
   return res, nil
 }
 
-
 // 最後に挿入された行のidをint64型で返す
 func (res SqlResult) LastInsertId() (int64, error) {
   return res.Result.LastInsertId()
