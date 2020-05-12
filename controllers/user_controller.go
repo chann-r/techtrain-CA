@@ -21,7 +21,7 @@ func NewUserController(sqlHandler *database.SqlHandler) *UserController {
   }
 }
 
-// POSTリクエストに対して、ユーザーを保存して保存したユーザーをJSONで返す
+// POSTリクエストに対して、ユーザーを保存して保存したユーザーのトークンをJSONで返す
 func (controller *UserController) Create(c *gin.Context) {
   u := models.User{}
 
@@ -41,13 +41,21 @@ func (controller *UserController) Create(c *gin.Context) {
   }
 
   // idを元に User を検索
-  user, err := controller.UserRepository.FindByToken(id)
+  user, err := controller.UserRepository.FindById(id)
   if err != nil {
     c.JSON(500, err.Error())
     return
   }
 
-  c.JSON(201, user)
+  // トークンを作成
+  token, err := controller.UserRepository.CreateToken(user)
+
+  if err != nil {
+		c.JSON(500, err.Error())
+		return
+	}
+  // トークンを返す
+	c.JSON(200, token)
 }
 
 // GETリクエストがきたら、クエリからパラメーターを取得して、処理してJSONで返す
@@ -59,7 +67,7 @@ func (controller *UserController) Get(c *gin.Context) {
     c.JSON(500, err)
   }
 
-  user, err := controller.UserRepository.FindByToken(id)
+  user, err := controller.UserRepository.FindById(id)
   if err != nil {
     c.JSON(500, err)
     return

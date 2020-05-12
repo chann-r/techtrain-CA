@@ -1,6 +1,9 @@
 package database
 
-import "techtrain-CA/models"
+import (
+  "github.com/dgrijalva/jwt-go"
+  "techtrain-CA/models"
+  )
 
 // クエリを実行するための構造体
 type UserRepository struct {
@@ -27,7 +30,7 @@ func (repo *UserRepository) Store(user models.User) (id int, err error) {
 }
 
 // クエリを実行して結果を返す
-func (repo *UserRepository) FindByToken(identifier int) (user models.User, err error) {
+func (repo *UserRepository) FindById(identifier int) (user models.User, err error) {
   row, err := repo.SqlHandler.Query("SELECT id, name, created_at, updated_at FROM users WHERE id = ?", identifier)
 
   defer row.Close()
@@ -51,5 +54,26 @@ func (repo *UserRepository) FindByToken(identifier int) (user models.User, err e
   user.CreatedAt = created_at
   user.UpdatedAt = updated_at
 
+  return
+}
+
+// 署名するときに使う鍵
+var KEY []byte = []byte("key")
+
+// 署名して生成したトークンを返す
+func (repo *UserRepository) CreateToken(user models.User) (token string, err error) {
+  jwtToken := models.JwtToken{}
+
+  // ペイロードを作成
+  claims := jwt.StandardClaims{
+    // claim を設定
+    Issuer: "__init__",
+  }
+
+  // 署名前の（Header, Claims, Method）が入ったToken
+  jwtToken.Token = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+  // 署名してトークンを生成
+  token, err = jwtToken.SignedString(KEY)
   return
 }
