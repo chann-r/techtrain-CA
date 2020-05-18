@@ -48,18 +48,18 @@ func (controller *UserController) Create(c *gin.Context) {
   }
 
   // トークンを作成
-  token, err := controller.UserRepository.CreateToken(user)
+  tokenString, err := controller.UserRepository.CreateToken(user)
 
   if err != nil {
 		c.JSON(500, err.Error())
 		return
 	}
   // トークンを返す
-	c.JSON(200, token)
+	c.JSON(200, tokenString)
 }
 
 // GETリクエストがきたら、クエリからパラメーターを取得して、処理してJSONで返す
-func (controller *UserController) Get(c *gin.Context) {
+func (controller *UserController) GetUser(c *gin.Context) {
   // Paramメソッドでクエリのidを取得し、Atoiメソッドでintに変換
   id, err := strconv.Atoi(c.Param("id"))
 

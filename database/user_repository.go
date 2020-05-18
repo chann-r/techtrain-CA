@@ -61,7 +61,7 @@ func (repo *UserRepository) FindById(identifier int) (user models.User, err erro
 var KEY []byte = []byte("key")
 
 // 署名して生成したトークンを返す
-func (repo *UserRepository) CreateToken(user models.User) (token string, err error) {
+func (repo *UserRepository) CreateToken(user models.User) (tokenString string, err error) {
   jwtToken := models.JwtToken{}
 
   // ペイロードを作成
@@ -74,6 +74,6 @@ func (repo *UserRepository) CreateToken(user models.User) (token string, err err
   jwtToken.Token = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
   // 署名してトークンを生成
-  token, err = jwtToken.SignedString(KEY)
+  tokenString, err = jwtToken.SignedString(KEY)
   return
 }
