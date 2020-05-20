@@ -68,13 +68,13 @@ func (repo *UserRepository) CreateToken(u models.User) (user models.User, err er
   jwtToken := models.JwtToken{}
 
   // ユーザーidをintからstringに変換
-  idString := strconv.Itoa(user.Id)
+  idString := strconv.Itoa(u.Id)
 
   // ペイロードを作成
   claims := jwt.StandardClaims{
     // claim を設定
     Issuer: "__init__",
-    Subject: user.Name,
+    Subject: u.Name,
     Id: idString,
   }
 
@@ -84,11 +84,30 @@ func (repo *UserRepository) CreateToken(u models.User) (user models.User, err er
   // 署名してトークンを生成
   tokenString, err := jwtToken.SignedString(KEY)
 
-  if err!= nil {
+  if err != nil {
     return
   }
 
-  user.Token = tokenString
+  u.Token = tokenString
+  user = u
+
+  return
+}
+
+// トークンでユーザー名を検索して返す
+func (repo *UserRepository) FindByToken(tokenString string) (name string, err error) {
+  row, err := repo.SqlHandler.Query("SELECT name FROM users WHERE token = ?", tokenString)
+
+  defer row.Close()
+
+  if err != nil {
+    return
+  }
+
+  row.Next()
+  if err = row.Scan(&name); err != nil {
+    return
+  }
 
   return
 }

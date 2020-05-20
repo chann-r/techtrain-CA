@@ -67,3 +67,21 @@ func (controller *UserController) GetUser(c *gin.Context) {
   }
   c.JSON(200, user)
 }
+
+// ヘッダーのtokenを取得してデータベースと照合して、ユーザー名をJSONで返す
+func (controller *UserController) Get(c *gin.Context) {
+  // ヘッダーのtokenを取得
+  tokenString := c.Request.Header.Get("token")
+  if tokenString == "" {
+    c.JSON(500, "token must be needed.")
+    return
+  }
+
+  // トークンでユーザー名を検索
+  name, err := controller.UserRepository.FindByToken(tokenString)
+  if err != nil {
+		c.JSON(500, err.Error())
+		return
+	}
+  c.JSON(200, name)
+}
