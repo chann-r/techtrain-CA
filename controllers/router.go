@@ -19,6 +19,7 @@ func init() {
   //ユーザー関連のエンドポイント
   router.POST("/user/create", func(c *gin.Context) { userController.Create(c) })
   router.GET("/user/get/:id", func(c *gin.Context) { userController.GetUser(c) })
+  router.GET("/user/get/", func(c *gin.Context) { userController.Get(c) })
 
   Router = router
 }
