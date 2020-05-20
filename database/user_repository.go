@@ -32,7 +32,7 @@ func (repo *UserRepository) Store(user models.User) (id int, err error) {
 
 // クエリを実行して結果を返す
 func (repo *UserRepository) FindById(identifier int) (user models.User, err error) {
-  row, err := repo.SqlHandler.Query("SELECT id, name, created_at, updated_at FROM users WHERE id = ?", identifier)
+  row, err := repo.SqlHandler.Query("SELECT id, name, token, created_at, updated_at FROM users WHERE id = ?", identifier)
 
   defer row.Close()
 
@@ -42,16 +42,18 @@ func (repo *UserRepository) FindById(identifier int) (user models.User, err erro
 
   var id int
   var name string
+  var token string
   var created_at string
   var updated_at string
 
   row.Next()
-  if err = row.Scan(&id, &name, &created_at, &updated_at); err != nil {
+  if err = row.Scan(&id, &name, &token, &created_at, &updated_at); err != nil {
     return
   }
 
   user.Id = id
   user.Name = name
+  user.Token = token
   user.CreatedAt = created_at
   user.UpdatedAt = updated_at
 
