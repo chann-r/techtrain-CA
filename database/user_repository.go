@@ -13,7 +13,7 @@ type UserRepository struct {
 
 // 保存して保存した行のidを返す
 func (repo *UserRepository) Store(user models.User) (id int, err error) {
-  result, err := repo.SqlHandler.Execute("INSERT INTO users (name) VALUES (?)", user.Name,)
+  result, err := repo.SqlHandler.Execute("INSERT INTO users (name, token) VALUES (?, ?)", user.Name, user.Token)
 
   if err != nil {
     return
@@ -62,7 +62,7 @@ func (repo *UserRepository) FindById(identifier int) (user models.User, err erro
 var KEY []byte = []byte("key")
 
 // 署名して生成したトークンを返す
-func (repo *UserRepository) CreateToken(user models.User) (tokenString string, err error) {
+func (repo *UserRepository) CreateToken(u models.User) (user models.User, err error) {
   jwtToken := models.JwtToken{}
 
   // ユーザーidをintからstringに変換
@@ -80,6 +80,13 @@ func (repo *UserRepository) CreateToken(user models.User) (tokenString string, e
   jwtToken.Token = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
   // 署名してトークンを生成
-  tokenString, err = jwtToken.SignedString(KEY)
+  tokenString, err := jwtToken.SignedString(KEY)
+
+  if err!= nil {
+    return
+  }
+
+  user.Token = tokenString
+
   return
 }

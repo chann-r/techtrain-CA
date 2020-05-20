@@ -33,29 +33,22 @@ func (controller *UserController) Create(c *gin.Context) {
     return
   }
 
-  // 保存して、保存したidを取得
-  id, err := controller.UserRepository.Store(u)
-  if err != nil {
-    c.JSON(500, err.Error())
-    return
-  }
-
-  // idを元に User を検索
-  user, err := controller.UserRepository.FindById(id)
-  if err != nil {
-    c.JSON(500, err.Error())
-    return
-  }
-
-  // トークンを作成
-  tokenString, err := controller.UserRepository.CreateToken(user)
-
+  // トークンを格納したUser
+  user, err := controller.UserRepository.CreateToken(u)
   if err != nil {
 		c.JSON(500, err.Error())
 		return
 	}
+
+  // 保存して、保存したidを取得
+  _, err = controller.UserRepository.Store(user)
+  if err != nil {
+    c.JSON(500, err.Error())
+    return
+  }
+
   // トークンを返す
-	c.JSON(200, tokenString)
+	c.JSON(200, user.Token)
 }
 
 // GETリクエストがきたら、クエリからパラメーターを取得して、処理してJSONで返す
