@@ -3,6 +3,7 @@ package database
 import (
   "github.com/dgrijalva/jwt-go"
   "techtrain-CA/models"
+  "strconv"
   )
 
 // クエリを実行するための構造体
@@ -64,10 +65,15 @@ var KEY []byte = []byte("key")
 func (repo *UserRepository) CreateToken(user models.User) (tokenString string, err error) {
   jwtToken := models.JwtToken{}
 
+  // ユーザーidをintからstringに変換
+  idString := strconv.Itoa(user.Id)
+
   // ペイロードを作成
   claims := jwt.StandardClaims{
     // claim を設定
     Issuer: "__init__",
+    Subject: user.Name,
+    Id: idString,
   }
 
   // 署名前の（Header, Claims, Method）が入ったToken
