@@ -27,7 +27,6 @@ func (controller *UserController) Create(c *gin.Context) {
 
   // リクエストの Content-Typeをチェックしてバインド（JsonとXML以外だとエラーを吐く）
   err := c.Bind(&u)
-
   if err != nil {
     c.JSON(500, err.Error())
     return
@@ -84,4 +83,32 @@ func (controller *UserController) Get(c *gin.Context) {
 		return
 	}
   c.JSON(200, user.Name)
+}
+
+// ヘッダーのtokenを取得してリクエストボディにNameに従ってユーザー名を変更する
+func (controller *UserController) Update(c *gin.Context) {
+  u := models.User{}
+
+  err := c.Bind(&u)
+  if err != nil {
+    c.JSON(500, err.Error())
+    return
+  }
+
+  tokenString := c.Request.Header.Get("token")
+  if tokenString == "" {
+    c.JSON(500, "token must be needed.")
+    return
+  }
+
+  user, err := controller.UserRepository.FindByToken(tokenString)
+
+  // 変更するユーザーのidと変更情報を渡してユーザー情報を更新
+  err = controller.UserRepository.Change(user.Id, u)
+  if err != nil {
+    c.JSON(500, err.Error())
+    return
+  }
+
+  c.JSON(200, nil)
 }
