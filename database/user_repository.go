@@ -92,8 +92,8 @@ func (repo *UserRepository) CreateToken(u models.User) (user models.User, err er
 }
 
 // トークンでユーザー名を検索して返す
-func (repo *UserRepository) FindByToken(tokenString string) (name string, err error) {
-  row, err := repo.SqlHandler.Query("SELECT name FROM users WHERE token = ?", tokenString)
+func (repo *UserRepository) FindByToken(tokenString string) (user models.User, err error) {
+  row, err := repo.SqlHandler.Query("SELECT id, name, token FROM users WHERE token = ?", tokenString)
 
   defer row.Close()
 
@@ -101,9 +101,19 @@ func (repo *UserRepository) FindByToken(tokenString string) (name string, err er
     return
   }
 
+  var id int
+  var name string
+  var token string
+
   row.Next()
-  if err = row.Scan(&name); err != nil {
+  if err = row.Scan(&id, &name, &token); err != nil {
     return
+  }
+
+  user = models.User {
+    Id: id,
+    Name: name,
+    Token: token,
   }
 
   return
