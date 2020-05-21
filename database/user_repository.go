@@ -91,7 +91,7 @@ func (repo *UserRepository) CreateToken(u models.User) (user models.User, err er
   return
 }
 
-// トークンでユーザー名を検索して返す
+// トークンでユーザーを検索して返す
 func (repo *UserRepository) FindByToken(tokenString string) (user models.User, err error) {
   row, err := repo.SqlHandler.Query("SELECT id, name, token FROM users WHERE token = ?", tokenString)
 
@@ -117,4 +117,13 @@ func (repo *UserRepository) FindByToken(tokenString string) (user models.User, e
   }
 
   return
+}
+
+// ユーザーidでユーザーを検索して、ユーザー名を更新してエラーを返す
+func (repo *UserRepository) Change(id int, user models.User) (err error) {
+  row, err := repo.SqlHandler.Query("UPDATE users set name = ? WHERE id = ?", user.Name, id)
+
+  defer row.Close()
+
+  return err
 }
