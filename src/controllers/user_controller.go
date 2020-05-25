@@ -85,7 +85,11 @@ func (controller *UserController) Get(c *gin.Context) {
 		c.JSON(500, err.Error())
 		return
 	}
-  c.JSON(200, user.Name)
+
+  // tokenのmapを作成
+  name := map[string]string{"name": user.Name}
+
+  c.JSON(200, name)
 }
 
 // ヘッダーのtokenを取得してリクエストボディにNameに従ってユーザー名を変更する
