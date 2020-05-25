@@ -86,7 +86,7 @@ func (controller *UserController) Get(c *gin.Context) {
 		return
 	}
 
-  // tokenのmapを作成
+  // nameのmapを作成
   name := map[string]string{"name": user.Name}
 
   c.JSON(200, name)
@@ -117,5 +117,5 @@ func (controller *UserController) Update(c *gin.Context) {
     return
   }
 
-  c.JSON(200, nil)
+  c.Status(200)
 }
