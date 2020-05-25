@@ -1,9 +1,9 @@
 package models
 
 type User struct {
-  Id int
-  Name string
-  Token string
-  CreatedAt string
-  UpdatedAt string
+  Id int            `json:"id"`
+  Name string       `json:"name"`
+  Token string      `json:"token"`
+  CreatedAt string  `json:"created_at"`
+  UpdatedAt string  `json:"updated_at"`
 }
