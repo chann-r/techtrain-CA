@@ -70,7 +70,7 @@ func (controller *UserController) GetUser(c *gin.Context) {
 // ヘッダーのtokenを取得してデータベースと照合して、ユーザー名をJSONで返す
 func (controller *UserController) Get(c *gin.Context) {
   // ヘッダーのtokenを取得
-  tokenString := c.Request.Header.Get("token")
+  tokenString := c.Request.Header.Get("x-token")
   if tokenString == "" {
     c.JSON(500, "token must be needed.")
     return
@@ -95,7 +95,7 @@ func (controller *UserController) Update(c *gin.Context) {
     return
   }
 
-  tokenString := c.Request.Header.Get("token")
+  tokenString := c.Request.Header.Get("x-token")
   if tokenString == "" {
     c.JSON(500, "token must be needed.")
     return
