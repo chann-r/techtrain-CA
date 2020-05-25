@@ -46,8 +46,11 @@ func (controller *UserController) Create(c *gin.Context) {
     return
   }
 
+  // tokenのmapを作成
+  token := map[string]string{"token": user.Token}
+
   // トークンを返す
-	c.JSON(200, user.Token)
+	c.JSON(200, token)
 }
 
 // GETリクエストがきたら、クエリからパラメーターを取得して、処理してJSONで返す
