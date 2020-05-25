@@ -3,7 +3,7 @@ version: '3'
 services:
   api:
     tty: true
-    build: .
+    build: ./src
     ports:
       # ホスト:コンテナ
       - "3000:8080"
@@ -12,7 +12,7 @@ services:
     container_name: api
     # コンテナのtechtrain-CAとマウント
     volumes:
-      - .:/techtrain-CA
+      - ./src:/techtrain-CA
     command: "go run server.go"
 
   mysql:
@@ -28,6 +28,8 @@ services:
       - db-data:/var/lib/mysql
       # 初期データを格納
       - ./mysql:/docker-entrypoint-initdb.d
+      # 文字コード読み込み
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     # workbench と接続するためにホストとコンテナを接続
     ports:
       - "3306:3306"
