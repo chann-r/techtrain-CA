@@ -10,7 +10,7 @@ type CollectionRepository struct {
   SqlHandler *SqlHandler
 }
 
-// timesの数だけランダムにcharacter_idを生成してuser_idと一緒に保存する関数
+// timesの数だけランダムにcharacter_idを生成してuser_idと一緒に保存する
 func (repo *CollectionRepository) Store(user_id int, times int) (characterIds []int, err error) {
   // シードを与える（デフォルトだと同じ乱数ジェネレーターを使用してしまう）
   rand.Seed(time.Now().UnixNano())
@@ -40,6 +40,7 @@ func (repo *CollectionRepository) Store(user_id int, times int) (characterIds []
   return
 }
 
+// idを格納したスライスを引数に、それぞれのcollectionを検索して返す
 func (repo *CollectionRepository) FindByIds(characterIds []int) (collections models.Collections, err error) {
   for _, value := range characterIds {
     row, _ := repo.SqlHandler.Query("SELECT id, user_id, character_id FROM collections WHERE id = ?", value)
@@ -71,7 +72,7 @@ func (repo *CollectionRepository) FindByIds(characterIds []int) (collections mod
   return
 }
 
-// collectionのidでcollectionを検索して返す関数
+// collectionのidでcollectionを検索して返す
 func (repo *CollectionRepository) FindById(identifier int) (collections models.Collection, err error) {
   row, err := repo.SqlHandler.Query("SELECT id, user_id, character_id FROM collections WHERE id = ?", identifier)
 

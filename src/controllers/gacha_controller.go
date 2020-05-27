@@ -60,6 +60,7 @@ func (controller *GachaController) Draw(c *gin.Context) {
   // 保存したcollectionを返す
   collections, err := controller.CollectionRepository.FindByIds(characterIds)
 
+  // マップにcollectionsを格納
   result := map[string]models.Collections{"result": collections}
 
   c.JSON(200, result)
