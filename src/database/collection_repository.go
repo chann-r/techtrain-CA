@@ -40,6 +40,37 @@ func (repo *CollectionRepository) Store(user_id int, times int) (characterIds []
   return
 }
 
+func (repo *CollectionRepository) FindByIds(characterIds []int) (collections models.Collections, err error) {
+  for _, value := range characterIds {
+    row, _ := repo.SqlHandler.Query("SELECT id, user_id, character_id FROM collections WHERE id = ?", value)
+
+    defer row.Close()
+
+    if err != nil {
+      return
+    }
+
+    var id int
+    var user_id int
+    var character_id int
+
+    row.Next()
+    if err = row.Scan(&id, &user_id, &character_id); err != nil {
+      return
+    }
+
+    collection := models.Collection {
+      Id:          id,
+      UserId:      user_id,
+      CharacterId: character_id,
+    }
+
+    collections = append(collections, collection)
+  }
+
+  return
+}
+
 // collectionのidでcollectionを検索して返す関数
 func (repo *CollectionRepository) FindById(identifier int) (collections models.Collection, err error) {
   row, err := repo.SqlHandler.Query("SELECT id, user_id, character_id FROM collections WHERE id = ?", identifier)
