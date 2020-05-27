@@ -3,6 +3,7 @@ package controllers
 import (
   "github.com/gin-gonic/gin"
   "techtrain-CA/database"
+  "techtrain-CA/models"
 )
 
 type GachaController struct {
@@ -23,6 +24,18 @@ func NewGachaController(sqlHandler *database.SqlHandler) *GachaController {
 
 // トークンからuser_idを取得してランダムにcharacter_idを生成して保存して返す
 func (controller *GachaController) Draw(c *gin.Context) {
+  // リクエストに合う構造体を定義
+  type GachaTimes struct {
+    Times int
+  }
+  gachaTimes := GachaTimes{}
+
+  err := c.Bind(&gachaTimes)
+  if err != nil {
+    c.JSON(500, err.Error())
+    return
+  }
+
   // ヘッdサーのtokenを取得
   tokenString := c.Request.Header.Get("x-token")
   if tokenString == "" {
@@ -38,14 +51,17 @@ func (controller *GachaController) Draw(c *gin.Context) {
 	}
 
   // ユーザーidとランダムで生成したキャラクターidを保存して、collectionのidを返す
-  id, err := controller.CollectionRepository.Store(user.Id)
+  characterIds, err := controller.CollectionRepository.Store(user.Id, gachaTimes.Times)
   if err != nil {
 		c.JSON(500, err.Error())
 		return
 	}
 
   // 保存したcollectionを返す
-  collection, err := controller.CollectionRepository.FindById(id)
+  collections, err := controller.CollectionRepository.FindByIds(characterIds)
 
-  c.JSON(200, collection)
+  // マップにcollectionsを格納
+  result := map[string]models.Collections{"result": collections}
+
+  c.JSON(200, result)
 }
