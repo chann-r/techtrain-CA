@@ -21,6 +21,7 @@ func NewGachaController(sqlHandler *database.SqlHandler) *GachaController {
   }
 }
 
+// トークンからuser_idを取得してランダムにcharacter_idを生成して保存して返す
 func (controller *GachaController) Draw(c *gin.Context) {
   // ヘッdサーのtokenを取得
   tokenString := c.Request.Header.Get("x-token")
@@ -36,12 +37,14 @@ func (controller *GachaController) Draw(c *gin.Context) {
 		return
 	}
 
+  // ユーザーidとランダムで生成したキャラクターidを保存して、collectionのidを返す
   id, err := controller.CollectionRepository.Store(user.Id)
   if err != nil {
 		c.JSON(500, err.Error())
 		return
 	}
 
+  // 保存したcollectionを返す
   collection, err := controller.CollectionRepository.FindById(id)
 
   c.JSON(200, collection)

@@ -17,12 +17,13 @@ func init() {
   userController := NewUserController(database.NewSqlHandler())
   gachaController := NewGachaController(database.NewSqlHandler())
 
-  //ユーザー関連のエンドポイント
+  // ユーザー関連のエンドポイント
   router.POST("/user/create", func(c *gin.Context) { userController.Create(c) })
   router.GET("/user/get/:id", func(c *gin.Context) { userController.GetUser(c) })
   router.GET("/user/get", func(c *gin.Context) { userController.Get(c) })
   router.PUT("/user/update", func(c *gin.Context) { userController.Update(c) })
 
+  // ガチャ関連のエンドポイント 
   router.POST("/gacha/draw", func(c *gin.Context) { gachaController.Draw(c) })
 
   Router = router
