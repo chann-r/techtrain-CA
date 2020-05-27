@@ -5,3 +5,5 @@ type Collection struct {
   UserId      int
   CharacterId int
 }
+
+type Collections []Collection

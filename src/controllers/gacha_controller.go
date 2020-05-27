@@ -3,6 +3,7 @@ package controllers
 import (
   "github.com/gin-gonic/gin"
   "techtrain-CA/database"
+  "techtrain-CA/models"
 )
 
 type GachaController struct {
@@ -57,7 +58,9 @@ func (controller *GachaController) Draw(c *gin.Context) {
 	}
 
   // 保存したcollectionを返す
-  // collection, err := controller.CollectionRepository.FindById(id)
+  collections, err := controller.CollectionRepository.FindByIds(characterIds)
 
-  c.JSON(200, characterIds)
+  result := map[string]models.Collections{"result": collections}
+
+  c.JSON(200, result)
 }
