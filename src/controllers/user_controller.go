@@ -79,7 +79,7 @@ func (controller *UserController) Get(c *gin.Context) {
     return
   }
 
-  // トークンでユーザー名を検索
+  // トークンでユーザーを検索
   user, err := controller.UserRepository.FindByToken(tokenString)
   if err != nil {
 		c.JSON(500, err.Error())
