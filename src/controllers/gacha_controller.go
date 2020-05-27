@@ -36,5 +36,13 @@ func (controller *GachaController) Draw(c *gin.Context) {
 		return
 	}
 
-  c.JSON(200, user)
+  id, err := controller.CollectionRepository.Store(user.Id)
+  if err != nil {
+		c.JSON(500, err.Error())
+		return
+	}
+
+  collection, err := controller.CollectionRepository.FindById(id)
+
+  c.JSON(200, collection)
 }
