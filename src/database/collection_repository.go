@@ -3,6 +3,7 @@ package database
 import (
   "math/rand"
   "time"
+  "techtrain-CA/models"
 )
 
 type CollectionRepository struct {
@@ -28,5 +29,32 @@ func (repo *CollectionRepository) Store(user_id int) (id int, err error) {
 
   // intに変換
   id = int(identifier)
+  return
+}
+
+func (repo *CollectionRepository) FindById(identifier int) (collections models.Collection, err error) {
+  row, err := repo.SqlHandler.Query("SELECT id, user_id, character_id FROM collections WHERE id = ?", identifier)
+
+  defer row.Close()
+
+  if err != nil {
+    return
+  }
+
+  var id int
+  var user_id int
+  var character_id int
+
+  row.Next()
+  if err = row.Scan(&id, &user_id, &character_id); err != nil {
+    return
+  }
+
+  collections = models.Collection {
+    Id:          id,
+    UserId:      user_id,
+    CharacterId: character_id,
+  }
+
   return
 }
