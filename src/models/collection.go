@@ -10,7 +10,7 @@ type Collections []Collection
 
 
 type GachaDrawResponse struct {
-  CharacterId int    `json:"characterID"`
+  CharacterId string `json:"characterID"`
   Name        string `json:"name"`
 }
 
