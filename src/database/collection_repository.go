@@ -41,9 +41,9 @@ func (repo *CollectionRepository) Store(user_id int, times int) (characterIds []
 }
 
 // idを格納したスライスを引数に、それぞれのcollectionを検索して返す
-func (repo *CollectionRepository) FindByIds(characterIds []int) (collections models.Collections, err error) {
+func (repo *CollectionRepository) FindByIds(characterIds []int) (gachaDrawResponses models.GachaDrawResponses, err error) {
   for _, value := range characterIds {
-    row, _ := repo.SqlHandler.Query("SELECT id, user_id, character_id FROM collections WHERE id = ?", value)
+    row, _ := repo.SqlHandler.Query("SELECT collections.character_id, characters.name from collections INNER JOIN characters ON collections.character_id = characters.id WHERE collections.id = ?", value)
 
     defer row.Close()
 
@@ -51,22 +51,20 @@ func (repo *CollectionRepository) FindByIds(characterIds []int) (collections mod
       return
     }
 
-    var id int
-    var user_id int
-    var character_id int
+    var characterID int
+    var name string
 
     row.Next()
-    if err = row.Scan(&id, &user_id, &character_id); err != nil {
+    if err = row.Scan(&characterID, &name); err != nil {
       return
     }
 
-    collection := models.Collection {
-      Id:          id,
-      UserId:      user_id,
-      CharacterId: character_id,
+    gachaDrawResponse := models.GachaDrawResponse {
+      CharacterId: characterID,
+      Name:        name,
     }
 
-    collections = append(collections, collection)
+    gachaDrawResponses = append(gachaDrawResponses, gachaDrawResponse)
   }
 
   return
