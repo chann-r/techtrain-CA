@@ -57,11 +57,11 @@ func (controller *GachaController) Draw(c *gin.Context) {
 		return
 	}
 
-  // 保存したcollectionを返す
-  collections, err := controller.CollectionRepository.FindByIds(characterIds)
+  // 保存したcollectionをフォーマットを調整して返す
+  gachaDrawResponses, err := controller.CollectionRepository.FindByIds(characterIds)
 
-  // マップにcollectionsを格納
-  result := map[string]models.Collections{"result": collections}
+  // マップに保存したガチャ内容を格納
+  result := map[string]models.GachaDrawResponses{"result": gachaDrawResponses}
 
   c.JSON(200, result)
 }
