@@ -7,3 +7,11 @@ type Collection struct {
 }
 
 type Collections []Collection
+
+
+type GachaDrawResponse struct {
+  CharacterId int    `json:"characterID"`
+  Name        string `json:"name"`
+}
+
+type GachaDrawResponses []GachaDrawResponse
