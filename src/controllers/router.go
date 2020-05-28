@@ -16,6 +16,7 @@ func init() {
   // DBに接続 & コントローラーを初期化
   userController := NewUserController(database.NewSqlHandler())
   gachaController := NewGachaController(database.NewSqlHandler())
+  characterController := NewCharacterController(database.NewSqlHandler())
 
   // ユーザー関連のエンドポイント
   router.POST("/user/create", func(c *gin.Context) { userController.Create(c) })
@@ -23,8 +24,11 @@ func init() {
   router.GET("/user/get", func(c *gin.Context) { userController.Get(c) })
   router.PUT("/user/update", func(c *gin.Context) { userController.Update(c) })
 
-  // ガチャ関連のエンドポイント 
+  // ガチャ関連のエンドポイント
   router.POST("/gacha/draw", func(c *gin.Context) { gachaController.Draw(c) })
+
+  // キャラクター関連のエンドポイント
+  router.GET("/character/list", func(c *gin.Context) { characterController.List(c) })
 
   Router = router
 }

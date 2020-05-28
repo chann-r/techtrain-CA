@@ -15,3 +15,12 @@ type GachaDrawResponse struct {
 }
 
 type GachaDrawResponses []GachaDrawResponse
+
+
+type UserCharacter struct {
+  UserCharacterId string `json:"UserCharacterID"`
+  CharacterId     string `json:"characterID"`
+  Name            string `json:"name"`
+}
+
+type UserCharacters []UserCharacter

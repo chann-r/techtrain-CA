@@ -44,9 +44,9 @@ func (repo *CollectionRepository) Store(user_id int, times int) (characterIds []
 // idを格納したスライスを引数に、それぞれのcollectionを検索して返す
 func (repo *CollectionRepository) FindByIds(characterIds []int) (gachaDrawResponses models.GachaDrawResponses, err error) {
   for _, value := range characterIds {
-    row, _ := repo.SqlHandler.Query("SELECT collections.character_id, characters.name from collections INNER JOIN characters ON collections.character_id = characters.id WHERE collections.id = ?", value)
+    rows, _ := repo.SqlHandler.Query("SELECT collections.character_id, characters.name FROM collections INNER JOIN characters ON collections.character_id = characters.id WHERE collections.id = ?", value)
 
-    defer row.Close()
+    defer rows.Close()
 
     if err != nil {
       return
@@ -55,8 +55,8 @@ func (repo *CollectionRepository) FindByIds(characterIds []int) (gachaDrawRespon
     var characterId int
     var name string
 
-    row.Next()
-    if err = row.Scan(&characterId, &name); err != nil {
+    rows.Next()
+    if err = rows.Scan(&characterId, &name); err != nil {
       return
     }
 
@@ -72,6 +72,41 @@ func (repo *CollectionRepository) FindByIds(characterIds []int) (gachaDrawRespon
 
   return
 }
+
+// ユーザーidで所有キャラクターを検索して返す
+func (repo *CollectionRepository) FindByUserId(user_id int) (userCharacters models.UserCharacters, err error) {
+  rows, err := repo.SqlHandler.Query("SELECT collections.id, collections.character_id, characters.name FROM collections INNER JOIN characters ON collections.character_id = characters.id WHERE collections.user_id = ?", user_id)
+
+  defer rows.Close()
+
+  if err != nil {
+    return
+  }
+
+  for rows.Next() {
+    var userCharacterId int
+    var characterId     int
+    var name            string
+
+    if err = rows.Scan(&userCharacterId, &characterId, &name); err != nil {
+      return
+    }
+
+    userCharacterID := strconv.Itoa(userCharacterId)
+    characterID     := strconv.Itoa(characterId)
+
+    userCharacter := models.UserCharacter {
+      UserCharacterId: userCharacterID,
+      CharacterId:     characterID,
+      Name:            name,
+    }
+
+    userCharacters = append(userCharacters, userCharacter)
+  }
+
+  return
+}
+
 
 // collectionのidでcollectionを検索して返す
 func (repo *CollectionRepository) FindById(identifier int) (collections models.Collection, err error) {
