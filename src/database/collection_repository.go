@@ -3,6 +3,7 @@ package database
 import (
   "math/rand"
   "time"
+  "strconv"
   "techtrain-CA/models"
 )
 
@@ -51,13 +52,15 @@ func (repo *CollectionRepository) FindByIds(characterIds []int) (gachaDrawRespon
       return
     }
 
-    var characterID int
+    var characterId int
     var name string
 
     row.Next()
-    if err = row.Scan(&characterID, &name); err != nil {
+    if err = row.Scan(&characterId, &name); err != nil {
       return
     }
+
+    characterID := strconv.Itoa(characterId)
 
     gachaDrawResponse := models.GachaDrawResponse {
       CharacterId: characterID,
