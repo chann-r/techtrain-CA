@@ -34,6 +34,18 @@ services:
     ports:
       - "3306:3306"
 
+  app:
+    tty: true
+    build: ./front
+    ports:
+      - "8080:8000"
+    depends_on:
+      - api
+    container_name: app
+    volumes:
+      - ./front:/techtrain-CA/front
+    # command: /bin/sh
+
 # docker のリソースとしてのvolume
 volumes:
   # ボリュームの名前を指定して保存
