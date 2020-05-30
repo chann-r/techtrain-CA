@@ -18,7 +18,7 @@ func (repo *CollectionRepository) Store(user_id int, times int) (characterIds []
 
   for i := 1; i <= times; i++ {
     // 0から2までの乱数に1を足す
-    character_id := rand.Intn(2) + 1
+    character_id := rand.Intn(3) + 1
 
     result, _ := repo.SqlHandler.Execute("INSERT INTO collections (user_id, character_id) VALUES (?, ?)", user_id, character_id)
     if err != nil {
