@@ -44,7 +44,7 @@ services:
     container_name: app
     volumes:
       - ./front:/techtrain-CA/front
-    # command: /bin/sh
+    command: "yarn serve"
 
 # docker のリソースとしてのvolume
 volumes:
