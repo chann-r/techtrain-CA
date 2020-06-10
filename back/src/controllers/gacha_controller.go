@@ -7,12 +7,16 @@ import (
 )
 
 type GachaController struct {
+  GachaRepository      database.GachaRepository
   CollectionRepository database.CollectionRepository
   UserRepository       database.UserRepository
 }
 
 func NewGachaController(sqlHandler *database.SqlHandler) *GachaController {
   return &GachaController{
+    GachaRepository: database.GachaRepository{
+      SqlHandler: sqlHandler,
+    },
     CollectionRepository: database.CollectionRepository{
       SqlHandler: sqlHandler,
     },
@@ -51,7 +55,7 @@ func (controller *GachaController) Draw(c *gin.Context) {
   }
 
   // 保存するキャラクターidを選択
-  characterIds, err := controller.CollectionRepository.Choose(gachaTimes.Times)
+  characterIds, err := controller.GachaRepository.Choose(gachaTimes.Times)
   if err != nil {
     c.JSON(500, err.Error())
     return
