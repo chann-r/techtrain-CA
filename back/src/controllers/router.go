@@ -34,7 +34,7 @@ func init() {
     },
     // 許可するアクセス元
     AllowOrigins: []string{
-      "http://localhost:8080",
+      "*",
     },
     MaxAge: 24 * time.Hour,
     }))
