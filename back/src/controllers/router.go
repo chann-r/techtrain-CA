@@ -37,7 +37,7 @@ func init() {
       "*",
     },
     MaxAge: 24 * time.Hour,
-    }))
+  }))
 
   // DBに接続 & コントローラーを初期化
   userController := NewUserController(database.NewSqlHandler())

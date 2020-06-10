@@ -36,7 +36,7 @@ func (controller *GachaController) Draw(c *gin.Context) {
     return
   }
 
-  // ヘッdサーのtokenを取得
+  // ヘッダーのtokenを取得
   tokenString := c.Request.Header.Get("x-token")
   if tokenString == "" {
     c.JSON(500, "token must be needed.")
@@ -48,17 +48,24 @@ func (controller *GachaController) Draw(c *gin.Context) {
   if err != nil {
 		c.JSON(500, err.Error())
 		return
-	}
+  }
 
-  // ユーザーidとランダムで生成したキャラクターidを保存して、collectionのidを返す
-  characterIds, err := controller.CollectionRepository.Store(user.Id, gachaTimes.Times)
+  // 保存するキャラクターidを選択
+  characterIds, err := controller.CollectionRepository.Choose(gachaTimes.Times)
+  if err != nil {
+    c.JSON(500, err.Error())
+    return
+  }
+
+  // キャラクターを保存して、保存されたcollectionのidを返す
+  storedCharacterIds, err := controller.CollectionRepository.Store(user.Id, characterIds)
   if err != nil {
 		c.JSON(500, err.Error())
 		return
 	}
 
   // 保存したcollectionをフォーマットを調整して返す
-  gachaDrawResponses, err := controller.CollectionRepository.FindByIds(characterIds)
+  gachaDrawResponses, err := controller.CollectionRepository.FindByIds(storedCharacterIds)
 
   // マップに保存したガチャ内容を格納
   result := map[string]models.GachaDrawResponses{"result": gachaDrawResponses}
