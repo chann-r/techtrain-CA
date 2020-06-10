@@ -15,7 +15,7 @@ type CollectionRepository struct {
 // timesの数だけランダムにcharacter_idを生成して返す
 func (repo *CollectionRepository) Choose(times int) (characterIds []int, err error){
 
-  rows, err := repo.SqlHandler.Query("SELECT weight FROM probabilities")
+  rows, err := repo.SqlHandler.Query("SELECT weight FROM probabilities ORDER BY id")
   if err != nil {
     return
   }
@@ -47,19 +47,18 @@ func (repo *CollectionRepository) Choose(times int) (characterIds []int, err err
   // シードを与える（デフォルトだと同じ乱数ジェネレーターを使用してしまう）
   rand.Seed(time.Now().UnixNano())
 
-  for i := 1; i <= times; i++ {
+  for i := 1; i <= times; i++ { // 保存するキャラクターidの計算をtimesの数だけ実行
     // 0から99までの乱数に1を足す(1から100までの乱数を生成)
     percentage := rand.Intn(99) + 1
     log.Print("The random percentage is ", percentage)
 
     var character_id int // 保存するキャラクターid
 
-    if thresholds[0] <= percentage && percentage <= thresholds[1] {
-      character_id = 1
-    } else if thresholds[1] <= percentage && percentage <= thresholds[2] {
-      character_id = 2
-    } else {
-      character_id = 3
+    // 保存するキャラクターidの計算
+    for j := 0; j < len(probabilities); j++ {
+      if thresholds[j] <= percentage && percentage <= thresholds[j+1] {
+        character_id = j + 1
+      }
     }
     log.Print("The character_id is ", character_id)
 
