@@ -21,9 +21,9 @@ func (repo *CollectionRepository) Choose(times int) (characterIds []int, err err
   }
   defer rows.Close()
 
-  var probabilities []int
+  var probabilities []int // 確率を格納するスライス
 
-  for rows.Next() {
+  for rows.Next() { // 確率を格納するスライス
     var probability int
 
     if err = rows.Scan(&probability); err != nil {
@@ -32,31 +32,40 @@ func (repo *CollectionRepository) Choose(times int) (characterIds []int, err err
 
     probabilities = append(probabilities, probability)
   }
-
   log.Print("The probability slice is ", probabilities)
 
-  thresholds := [] int{0} //閾値
+  thresholds := [] int{0} //閾値を格納するスライス
 
+  // 閾値を計算して格納
   for k := 0; k < len(probabilities); k++ {
     threshold := thresholds[k] + probabilities[k]
 
     thresholds = append(thresholds, threshold)
   }
-
   log.Print("The threshold slice is ", thresholds)
 
   // シードを与える（デフォルトだと同じ乱数ジェネレーターを使用してしまう）
   rand.Seed(time.Now().UnixNano())
 
   for i := 1; i <= times; i++ {
-    // 0から2までの乱数に1を足す
-    character_id := rand.Intn(3) + 1
+    // 0から99までの乱数に1を足す(1から100までの乱数を生成)
+    percentage := rand.Intn(99) + 1
+    log.Print("The random percentage is ", percentage)
 
-    // スライスの要素に保存したcollectionのideを追加
+    var character_id int // 保存するキャラクターid
+
+    if thresholds[0] <= percentage && percentage <= thresholds[1] {
+      character_id = 1
+    } else if thresholds[1] <= percentage && percentage <= thresholds[2] {
+      character_id = 2
+    } else {
+      character_id = 3
+    }
+    log.Print("The character_id is ", character_id)
+
+    // 保存するキャラクターidを格納したスライス
     characterIds = append(characterIds, character_id)
   }
-
-  log.Print("The character slice size is ", len(characterIds))
 
   return
 }
