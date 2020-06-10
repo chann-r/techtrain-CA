@@ -14,6 +14,37 @@ type CollectionRepository struct {
 
 // timesの数だけランダムにcharacter_idを生成して返す
 func (repo *CollectionRepository) Choose(times int) (characterIds []int, err error){
+
+  rows, err := repo.SqlHandler.Query("SELECT weight FROM probabilities")
+  if err != nil {
+    return
+  }
+  defer rows.Close()
+
+  var probabilities []int
+
+  for rows.Next() {
+    var probability int
+
+    if err = rows.Scan(&probability); err != nil {
+      return
+    }
+
+    probabilities = append(probabilities, probability)
+  }
+
+  log.Print("The probability slice is ", probabilities)
+
+  thresholds := [] int{0} //閾値
+
+  for k := 0; k < len(probabilities); k++ {
+    threshold := thresholds[k] + probabilities[k]
+
+    thresholds = append(thresholds, threshold)
+  }
+
+  log.Print("The threshold slice is ", thresholds)
+
   // シードを与える（デフォルトだと同じ乱数ジェネレーターを使用してしまう）
   rand.Seed(time.Now().UnixNano())
 
@@ -25,7 +56,7 @@ func (repo *CollectionRepository) Choose(times int) (characterIds []int, err err
     characterIds = append(characterIds, character_id)
   }
 
-  log.Printf("The character slice size is %d", len(characterIds))
+  log.Print("The character slice size is ", len(characterIds))
 
   return
 }
