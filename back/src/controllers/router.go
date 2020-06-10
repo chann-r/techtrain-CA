@@ -34,10 +34,10 @@ func init() {
     },
     // 許可するアクセス元
     AllowOrigins: []string{
-      "http://localhost:8080",
+      "*",
     },
     MaxAge: 24 * time.Hour,
-    }))
+  }))
 
   // DBに接続 & コントローラーを初期化
   userController := NewUserController(database.NewSqlHandler())

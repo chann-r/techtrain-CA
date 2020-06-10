@@ -25,7 +25,18 @@ CREATE TABLE collections(
     REFERENCES users (id)
     ON DELETE SET NULL ON UPDATE CASCADE,
 
-  CONSTRAINT fk_character_id
+  CONSTRAINT fk_character_id_collections
+    FOREIGN KEY (character_id)
+    REFERENCES characters (id)
+    ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE probabilities(
+  id           INTEGER PRIMARY KEY AUTO_INCREMENT,
+  weight       INTEGER,
+  character_id INTEGER,
+
+  CONSTRAINT fk_character_id_probabilities
     FOREIGN KEY (character_id)
     REFERENCES characters (id)
     ON DELETE SET NULL ON UPDATE CASCADE
@@ -41,3 +52,7 @@ INSERT INTO characters (name) VALUES ("ゼニガメ");
 INSERT INTO collections (user_id, character_id) VALUES (1, 1);
 INSERT INTO collections (user_id, character_id) VALUES (1, 2);
 INSERT INTO collections (user_id, character_id) VALUES (2, 3);
+
+INSERT INTO probabilities (weight, character_id) VALUES (10, 1);
+INSERT INTO probabilities (weight, character_id) VALUES (20, 2);
+INSERT INTO probabilities (weight, character_id) VALUES (70, 3);
