@@ -3,7 +3,7 @@ version: '3'
 services:
   api:
     tty: true
-    build: .
+    build: ./back/src
     ports:
       # ホスト:コンテナ
       - "3000:8080"
@@ -12,8 +12,8 @@ services:
     container_name: api
     # コンテナのtechtrain-CAとマウント
     volumes:
-      - .:/techtrain-CA
-    command: "go run server.go"
+      - ./back/src:/techtrain-CA/back
+    command: go run /techtrain-CA/back/server.go
 
   mysql:
     image: mysql:5.7.22
@@ -27,10 +27,24 @@ services:
       # db-data という volume を作成
       - db-data:/var/lib/mysql
       # 初期データを格納
-      - ./mysql:/docker-entrypoint-initdb.d
+      - ./back/mysql:/docker-entrypoint-initdb.d
+      # 文字コード読み込み
+      - ./back/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     # workbench と接続するためにホストとコンテナを接続
     ports:
       - "3306:3306"
+
+  app:
+    tty: true
+    build: ./front
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+    container_name: app
+    volumes:
+      - ./front:/techtrain-CA/front
+    command: "yarn serve"
 
 # docker のリソースとしてのvolume
 volumes:

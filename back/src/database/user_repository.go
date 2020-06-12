@@ -63,7 +63,7 @@ func (repo *UserRepository) FindById(identifier int) (user models.User, err erro
 // 署名するときに使う鍵
 var KEY []byte = []byte("key")
 
-// 署名して生成したトークンを返す
+// 署名して生成したトークンを格納したユーザーを返す
 func (repo *UserRepository) CreateToken(u models.User) (user models.User, err error) {
   jwtToken := models.JwtToken{}
 

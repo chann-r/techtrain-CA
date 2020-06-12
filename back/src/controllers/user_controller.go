@@ -46,8 +46,11 @@ func (controller *UserController) Create(c *gin.Context) {
     return
   }
 
+  // tokenのmapを作成
+  token := map[string]string{"token": user.Token}
+
   // トークンを返す
-	c.JSON(200, user.Token)
+	c.JSON(200, token)
 }
 
 // GETリクエストがきたら、クエリからパラメーターを取得して、処理してJSONで返す
@@ -70,19 +73,23 @@ func (controller *UserController) GetUser(c *gin.Context) {
 // ヘッダーのtokenを取得してデータベースと照合して、ユーザー名をJSONで返す
 func (controller *UserController) Get(c *gin.Context) {
   // ヘッダーのtokenを取得
-  tokenString := c.Request.Header.Get("token")
+  tokenString := c.Request.Header.Get("x-token")
   if tokenString == "" {
     c.JSON(500, "token must be needed.")
     return
   }
 
-  // トークンでユーザー名を検索
+  // トークンでユーザーを検索
   user, err := controller.UserRepository.FindByToken(tokenString)
   if err != nil {
 		c.JSON(500, err.Error())
 		return
 	}
-  c.JSON(200, user.Name)
+
+  // nameのmapを作成
+  name := map[string]string{"name": user.Name}
+
+  c.JSON(200, name)
 }
 
 // ヘッダーのtokenを取得してリクエストボディにNameに従ってユーザー名を変更する
@@ -95,7 +102,7 @@ func (controller *UserController) Update(c *gin.Context) {
     return
   }
 
-  tokenString := c.Request.Header.Get("token")
+  tokenString := c.Request.Header.Get("x-token")
   if tokenString == "" {
     c.JSON(500, "token must be needed.")
     return
@@ -110,5 +117,5 @@ func (controller *UserController) Update(c *gin.Context) {
     return
   }
 
-  c.JSON(200, nil)
+  c.Status(200)
 }

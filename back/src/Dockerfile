@@ -1,7 +1,7 @@
 FROM golang:1.14-alpine
 
 # 作業ディレクトリの作成・設定
-WORKDIR /techtrain-CA
+WORKDIR /techtrain-CA/back
 
 # Go Modules を有効化
 ENV GO111MODULE=on
