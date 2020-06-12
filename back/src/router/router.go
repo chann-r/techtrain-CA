@@ -1,9 +1,10 @@
-package controllers
+package router
 
 import (
   "github.com/gin-gonic/gin"
   "github.com/gin-contrib/cors"
   "techtrain-CA/database"
+  "techtrain-CA/controllers"
   "time"
 )
 
@@ -40,9 +41,9 @@ func init() {
   }))
 
   // DBに接続 & コントローラーを初期化
-  userController := NewUserController(database.NewSqlHandler())
-  gachaController := NewGachaController(database.NewSqlHandler())
-  characterController := NewCharacterController(database.NewSqlHandler())
+  userController := controllers.NewUserController(database.NewSqlHandler())
+  gachaController := controllers.NewGachaController(database.NewSqlHandler())
+  characterController := controllers.NewCharacterController(database.NewSqlHandler())
 
   // ユーザー関連のエンドポイント
   router.POST("/user/create", func(c *gin.Context) { userController.Create(c) })

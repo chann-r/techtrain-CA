@@ -13,7 +13,7 @@ services:
     # コンテナのtechtrain-CAとマウント
     volumes:
       - ./back/src:/techtrain-CA/back
-    command: "go run server.go"
+    command: go run /techtrain-CA/back/server.go
 
   mysql:
     image: mysql:5.7.22
